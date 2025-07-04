@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>GitHub Webhook Events</title>
+  <style>
+    body { font-family: Arial, sans-serif; margin: 20px; }
+    h2 { color: #333; }
+    .event { background: #f4f4f4; padding: 10px; margin-bottom: 5px; border-radius: 4px; }
+  </style>
+</head>
+<body>
+  <h2>Latest Webhook Events</h2>
+  <div id="events">Loading...</div>
+
+  <script>
+    async function loadEvents() {
+      try {
+        const res = await fetch('/events');
+        const data = await res.json();
+        console.log('Fetched data:', data);  // Add this line to debug
+        if (data.length === 0) {
+          document.getElementById("events").innerHTML = "<p>No events yet.</p>";
+        } else {
+          const html = data.map(e => {
+            let msg = "";
+            if (e.action === "push") {
+              msg = `${e.author} pushed to "${e.to_branch}" on ${e.timestamp}`;
+            } else if (e.action === "pull_request") {
+              msg = `${e.author} submitted a pull request from "${e.from_branch}" to "${e.to_branch}" on ${e.timestamp}`;
+            } else if (e.action === "merge") {
+              msg = `${e.author} merged branch "${e.from_branch}" to "${e.to_branch}" on ${e.timestamp}`;
+            } else {
+              msg = `Unknown action: ${e.action}`; // fallback
+            }
+            return `<div class="event">${msg}</div>`;
+          }).join("");
+          document.getElementById("events").innerHTML = html;
+        }
+      } catch (err) {
+        console.error(err);
+        document.getElementById("events").innerHTML = "<p>Error loading events.</p>";
+      }
+    }
+    loadEvents();
+    setInterval(loadEvents, 15000);
+  </script>
+</body>
+</html>
