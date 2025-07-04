@@ -8,7 +8,7 @@ app = Flask(__name__)
 CORS(app)
 
 # MongoDB connection
-client = MongoClient("mongodb+srv://Piuli:MbrGm8H1aJNrOB7J@cluster0.xof1kzt.mongodb.net/?retryWrites=true&w=majority")
+client = MongoClient("mongodb+srv://Piuli:<>@cluster0.xof1kzt.mongodb.net/?retryWrites=true&w=majority")
 db = client["webhook_db"]
 collection = db["events"]
 
